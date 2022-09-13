@@ -17,6 +17,8 @@ h3,
 h4,
 h5,
 h6,
+span,
+label,
 p {
   color: ${({ theme }) => theme.colors.text};
   margin: 0;

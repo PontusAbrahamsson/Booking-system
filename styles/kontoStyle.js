@@ -5,6 +5,7 @@ export const Container = styled.div`
   height: auto;
   margin: 0 auto;
   margin-top: 20px;
+  margin-bottom: 100px;
 
   .topSection {
     width: 100%;
@@ -230,10 +231,54 @@ export const ProfileInput = styled.div`
       font-size: 16px;
       font-weight: 500;
       outline: none;
+      /* background-color: white; */
+      color: ${({ theme }) => theme.colors.text};
+      background-color: white;
     }
 
     .eyeIcon {
       fill: grey;
+    }
+  }
+`
+
+export const DeletUserModal = styled.div`
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  bottom: 0;
+  background-color: grey;
+
+  .deletUserContainer {
+    background-color: white;
+    max-width: 520px;
+    border-radius: 10px;
+    margin: 0 auto;
+    margin-top: 25%;
+    box-sizing: border-box;
+    padding: 30px;
+
+    .cardTitle {
+      font-weight: 600;
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    .removeBtnWrapper {
+      margin-top: 30px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      .removeAccountBtn {
+        background-color: white;
+        border: none;
+        color: red;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+    }
     }
   }
 `
