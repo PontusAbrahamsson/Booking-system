@@ -4,12 +4,12 @@ export const AuthPage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   width: 100%;
+  margin-top: 150px;
 `
 
 export const AuthFormWrapper = styled.div`
-  max-height: 60%;
+  max-height: 75%;
   margin: auto 0;
   height: 100%;
   max-width: 340px;
@@ -39,5 +39,11 @@ export const GoogleAuthButton = styled.button`
   background-color: white;
   padding: 5px 0;
   border: 1px solid lightgrey;
+  cursor: pointer;
+`
+
+export const AlternativeSignIn = styled.span`
+  font-size: 16px;
+  text-align: center;
   cursor: pointer;
 `

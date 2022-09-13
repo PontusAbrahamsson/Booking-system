@@ -4,19 +4,27 @@ export const userSlice = createSlice({
 
   name: "user",
   initialState: {
-    user: null
+    defaultUser: null,
+    businessAccount: null
   },
 
   reducers: {
-    login: (state, action) => {
-      state.user = action.payload;
+    defaultUserLogin: (state, action) => {
+      state.defaultUser = action.payload;
     },
     logout: (state) => {
-      state.user = null;
+      state.defaultUser = null;
+      state.businessAccount = null;
+    },
+    signupAsBusiness: (state, action) => {
+      state.businessAccount = action.payload;
+    },
+    businessUserLogin: (state, action) => {
+      state.businessAccount = action.payload;
     }
   }
 });
 
-export const { login, logout } = userSlice.actions;
+export const { defaultUserLogin, logout, signupAsBusiness, businessUserLogin } = userSlice.actions;
 
 export default userSlice.reducer;

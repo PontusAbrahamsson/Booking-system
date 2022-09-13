@@ -1,34 +1,34 @@
-import { AuthPage, AuthFormWrapper, AuthForm, AuthFormTitle } from "./indexStyle";
+import { AuthPage, AuthFormWrapper, AuthForm, AuthFormTitle, AlternativeSignIn } from "../../styles/LoginSignupSyle";
 import Button from "../../components/Button/Button";
 import AuthInput from "../../components/AuthInput/AuthInput";
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/features/userSlice";
+import { login, signupAsBusiness } from "../../redux/features/userSlice";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/db";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 export default function Signin() {
-  const { user } = useSelector((state) => state.user)
+  const router = useRouter();
+  const currentUser = auth.currentUser;
+  const { defaultUser } = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  console.log(user)
 
-  async function login() {
-
+  async function handleLogin() {
     signInWithEmailAndPassword(auth, email, password)
       .then(({ user }) => {
-        dispatch(
-          login({
-            'uid': user.uid
-          })
-        )
+
       })
       .catch((error) => {
         console.log(error)
       })
+    router.push('/');
   };
+
+  if (defaultUser) { return null }
 
   return (
     <AuthPage>
@@ -49,8 +49,7 @@ export default function Signin() {
             value={password}
             setState={setPassword}
           />
-          <h1>{user?.uid}</h1>
-          <Button onClick={login} height="65px" text="logga in" marginTop="35px" />
+          <Button onClick={handleLogin} height="65px" text="logga in" marginTop="35px" />
         </AuthForm>
       </AuthFormWrapper>
     </AuthPage>

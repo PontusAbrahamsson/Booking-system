@@ -7,7 +7,6 @@ export const StyledNavbar = styled.header`
   background-color: #1a1a1a;
   padding: 0 100px;
   height: 65px;
-  width: 100vw;
   /* position: fixed; */
   box-sizing: border-box;
 
