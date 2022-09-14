@@ -276,8 +276,6 @@ export const DeletUserModal = styled.div`
       }
     }
 
-    
-
     .removeBtnWrapper {
       margin-top: 30px;
       width: 100%;
