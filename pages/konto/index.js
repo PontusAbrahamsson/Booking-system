@@ -109,8 +109,6 @@ export default function Konto() {
     }
   };
 
-  console.log(currentUser)
-
   //Delet account and reauthenticate
   async function handleDeletUser() {
     const credential = EmailAuthProvider.credential(currentUser.email, confirmPassword);

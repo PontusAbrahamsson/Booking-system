@@ -69,6 +69,7 @@ export default function SignupAsBusiness() {
           .then((result) => {
             console.log(result)
           });
+        router.push('/')
       })
   };
 

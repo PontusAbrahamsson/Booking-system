@@ -38,8 +38,8 @@ export default function Signup() {
             })
           )
           setDoc(doc(db, "users", user.uid), {
-            'uid': user.uid,
-            'displayName': username.concat(' ', lastname),
+            'förnamn': username,
+            'efternamn': lastname,
             'email': user.email,
             'phoneNumber': null,
             'photoUrl': null,
@@ -50,6 +50,7 @@ export default function Signup() {
             .then((result) => {
               console.log(result)
             });
+          router.push('/')
         })
           .catch((error) => {
             console.log(error)
@@ -78,11 +79,12 @@ export default function Signup() {
           'uid': user.uid
         }));
         setDoc(doc(db, "users", user.uid), {
-          'uid': user.uid,
-          'displayName': user.displayName,
+          'förnamn': username,
+          'efternamn': lastname,
           'email': user.email,
           'phoneNumber': null,
           'photoUrl': null,
+          'businessAccount': false
         })
         router.push('/');
         console.log(user)
