@@ -170,7 +170,7 @@ export const InfoItem = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin: 25px 0;
+  margin: 20px 0;
 
   .itemBox {
     display: flex;
@@ -238,6 +238,7 @@ export const ProfileInput = styled.div`
 
     .eyeIcon {
       fill: grey;
+      cursor: pointer;
     }
   }
 `
@@ -248,7 +249,7 @@ export const DeletUserModal = styled.div`
   width: 100vw;
   z-index: 100;
   bottom: 0;
-  background-color: grey;
+  background-color: rgba(39, 39, 39, 0.178);
 
   .deletUserContainer {
     background-color: white;
@@ -259,11 +260,23 @@ export const DeletUserModal = styled.div`
     box-sizing: border-box;
     padding: 30px;
 
-    .cardTitle {
-      font-weight: 600;
-      font-size: 24px;
-      margin-bottom: 40px;
+    .wrapper {
+      width: 100%;
+      display: flex;
+      /* height: 35px; */
+      justify-content: space-between;
+
+      .cardTitle {
+        font-weight: 600;
+        font-size: 24px;
+      }
+
+      .exitIcon {
+        cursor: pointer;
+      }
     }
+
+    
 
     .removeBtnWrapper {
       margin-top: 30px;

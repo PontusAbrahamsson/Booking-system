@@ -401,7 +401,10 @@ export default function Konto() {
       {deletUserModal === true &&
         <DeletUserModal>
           <div className='deletUserContainer'>
-            <h1 className='cardTitle'>Ta bort konto</h1>
+            <div className='wrapper'>
+              <h1 className='cardTitle'>Ta bort konto</h1>
+              <svg onClick={() => { setDeletUserModal(false); setConfirmPassword() }} className='exitIcon' xmlns="http://www.w3.org/2000/svg" height="40" width="40"><path d="m10.583 30.417-1-1L19 20l-9.417-9.417 1-1L20 19l9.417-9.417 1 1L21 20l9.417 9.417-1 1L20 21Z" /></svg>
+            </div>
             <ProfileInput>
               <label id='currentPassword' className='passwordLabel'>Bekräfta lösenord</label>
               <div className='inputBorder'>
