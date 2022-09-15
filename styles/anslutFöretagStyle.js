@@ -73,6 +73,7 @@ export const TextArea = styled.div`
       font-family: 'arial';
       border-radius: 4px;
       resize: none;
+      background-color: white;
     }
   }
 `
@@ -153,6 +154,7 @@ export const ProfileInput = styled.div`
 export const TimeInput = styled.div`
   width: 100%;
   display: flex;
+  align-items: center;
   margin-top: 20px;
   position: relative;
 
@@ -161,10 +163,55 @@ export const TimeInput = styled.div`
     font-weight: 600;
   }
 
-  .closed {
+  .closedBtn {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
     position: absolute;
     left: 100px;
+    border: 1px solid lightgray;
+    padding: 5px 15px;
+    border-radius: 6px;
+    transition: ease-in-out .1s;
+    cursor: pointer;
+    background-color: white;
+
+    span {
+      transition: ease-in-out;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    &:hover {
+      border-color: ${({ theme }) => theme.colors.link};
+    }
+
+    &:hover > span {
+      display: none;
+    }
+
+    &:hover::before {
+      content: "Lägg till";
+      color: ${({ theme }) => theme.colors.link};
+    }
+  }
+`
+
+export const AddTimeModal = styled.div`
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(39, 39, 39, 0.178);
+
+  .addTimeContainer {
+    background-color: white;
+    max-width: 520px;
+    border-radius: 10px;
+    margin: 0 auto;
+    margin-top: 25%;
+    box-sizing: border-box;
+    padding: 30px;
   }
 `

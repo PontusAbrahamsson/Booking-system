@@ -6,7 +6,8 @@ import {
   FlexBetweenWrapper,
   CardTitle,
   TextArea,
-  TimeInput
+  TimeInput,
+  AddTimeModal
 } from "../../styles/anslutFöretagStyle";
 import { useState, useEffect } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -58,8 +59,11 @@ export default function SignupAsBusiness() {
   const [utförandeTid, setUtförandeTid] = useState('');
   const [kostnad, setKostnad] = useState('');
 
-  const steps = ['Konto information', 'Anslut klinik', 'Slutför']
+  const [addTimeModal, setAddTimeModal] = useState(true);
+
   const [activeStep, setActiveStep] = useState(0);
+
+  const öppetider = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
 
   async function handleSignupAsBusiness() {
     if (password === repeatPassword && password.length >= 6) {
@@ -307,18 +311,22 @@ export default function SignupAsBusiness() {
           {activeStep === 2 &&
             <>
               <CardTitle>Öppetider</CardTitle>
-              <TimeInput>
-                <span className="day">Måndag</span>
-                <span className="closed">Stängt</span>
-              </TimeInput>
-              <TimeInput>
-                <span className="day">Måndag</span>
-                <span className="closed">Stängt</span>
-              </TimeInput>
-              <TimeInput>
-                <span className="day">Onsdddad</span>
-                <span className="closed">Stängt</span>
-              </TimeInput>
+              {öppetider.map((dag, index) => {
+
+                return (
+                  <TimeInput key={index}>
+                    <span className="day">{dag}</span>
+                    <button className="closedBtn"><span>Stängt</span></button>
+                  </TimeInput>
+                )
+              })}
+              {addTimeModal === true &&
+                <AddTimeModal>
+                  <div className="addTimeContainer">
+                    <CardTitle>Lägg till öppetid</CardTitle>
+                  </div>
+                </AddTimeModal>
+              }
             </>
           }
           <FlexBetweenWrapper justifyContent={activeStep > 0 ? 'space-between' : 'flex-end'}>
