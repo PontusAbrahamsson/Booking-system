@@ -543,8 +543,6 @@ export const ServiceTab = styled.div`
         }
       }
 
-      
-
       .arrowIcon {
         transition: ease-in-out 0.15s;
         transform: rotate(0);
@@ -562,8 +560,6 @@ export const ServiceTab = styled.div`
           transform: rotate(-180deg);
         }
       }
-
-      
     }
   }
 
@@ -627,6 +623,16 @@ export const ServiceTab = styled.div`
         }
       }
 
+      .serviceWrapper:hover > .titleIconWrapper > .iconWrapper  .editIcon {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .serviceWrapper:hover > .titleIconWrapper > .iconWrapper  .trashIcon {
+        visibility: visible;
+        opacity: 1;
+      }
+
       .serviceWrapper {
         margin: 15px 0 5px 0;
 
@@ -635,6 +641,47 @@ export const ServiceTab = styled.div`
           font-weight: 500;
           text-transform: capitalize;
         }
+
+        .titleIconWrapper {
+          width: 100%;
+          display: flex;
+
+          .iconWrapper {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-left: 5px;
+
+            .flexWrap {
+              display: flex;
+              align-items: center;
+              height: 100%;
+
+              .changeTitleInput {
+                max-width: 170px;
+                outline: none;
+                height: 25px;
+                border: 1px solid lightgray;
+                border-radius: 4px;
+                padding: 0 10px;
+                font-size: 16px;
+              }
+            }
+
+            .editIcon {
+              visibility: hidden;
+              opacity: 0;
+              transition: ease-in-out .15s;
+            }
+
+            .trashIcon {
+              fill: red;
+              visibility: hidden;
+              opacity: 0;
+              transition: ease-in-out .15s;
+            }
+          }
+        } 
       }
     }
   }
