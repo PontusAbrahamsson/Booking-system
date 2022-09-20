@@ -191,6 +191,7 @@ export default function SignupAsBusiness() {
   console.log(tjänstData)
 
   function getHeight(index) {
+    console.log(index)
     let element = document.getElementsByClassName('flexGrow')[index];
     element.classList.toggle('toogleDropDown');
 
@@ -201,6 +202,16 @@ export default function SignupAsBusiness() {
     } else {
       document.getElementsByClassName('dropDownData')[index].style.height = '0'
       document.getElementsByClassName('arrowIcon')[index].style.transform = 'rotate(0deg)'
+    }
+  };
+
+  function changeHeight(index) {
+    console.log(index)
+    let element = document.getElementsByClassName('flexGrow')[index];
+
+    if (element.classList.value.includes('toogleDropDown')) {
+      const boxHeight = document.getElementsByClassName('serviceInputWrapper')[index].offsetHeight
+      document.getElementsByClassName('dropDownData')[index].style.height = boxHeight - 113 + 'px'
     }
   };
 
@@ -219,14 +230,12 @@ export default function SignupAsBusiness() {
   };
 
   function removeService(...params) {
-    console.log(params)
     const huvudIndex = params[0]
     const tjänstIndex = params[1]
     const filter = tjänstData[huvudIndex].tjänster.filter((_, index) => index !== tjänstIndex)
-
-    console.log(filter)
-    setTjänstData(tjänstData)
-
+    tjänstData[huvudIndex].tjänster = filter
+    setTjänstData(tjänstData => ([...tjänstData]))
+    changeHeight(huvudIndex)
   };
 
   function backStep() {

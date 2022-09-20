@@ -11,8 +11,10 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.5",
     "firebase": "^9.9.3",
+    "i": "^0.3.7",
     "next": "12.2.5",
     "next-redux-wrapper": "^7.0.5",
+    "npm": "^8.19.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-phone-number-input": "^3.2.11",
