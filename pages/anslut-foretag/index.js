@@ -7,7 +7,10 @@ import {
   CardTitle,
   TextArea,
   TimeInput,
-  AddTimeModal
+  AddTimeModal,
+  StepperT,
+  ServiceTab,
+  SelectServiceModal
 } from "../../styles/anslutFöretagStyle";
 import { useState, useEffect } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -17,8 +20,9 @@ import { businessUserLogin } from "../../redux/features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setDoc, doc, addDoc, collection } from "firebase/firestore";
 import { useRouter } from "next/router";
-import { Stepper, Step, StepLabel } from '@mui/material';
-import loggaBlackText from '../../resources/images/Logo-black-text.png';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
+import fitnessImg from '../../resources/images/serviceIcons/fitness.png';
 import Image from "next/image";
 
 export default function SignupAsBusiness() {
@@ -36,7 +40,7 @@ export default function SignupAsBusiness() {
   const [företag, setFöretag] = useState('');
   const [hemsida, setHemsida] = useState('');
   const [address, setAddress] = useState('');
-  const [klenikTel, setKlenikTel] = useState('');
+  const [value, setValue] = useState();
   const [omOss, setOmOss] = useState('');
 
   const [mån, setMån] = useState('');
@@ -54,16 +58,78 @@ export default function SignupAsBusiness() {
   const [lörSlut, setLörSlut] = useState('');
   const [sönSlut, setSönSlut] = useState('');
 
+  const huvudTjänst = [
+    {
+      'img': fitnessImg,
+      'title': 'frisör'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'skönhet'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'naglar'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'hudvård'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'fillers'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'ögonbryn & fransar'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'träning'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'friskvård'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'massage'
+    },
+    {
+      'img': fitnessImg,
+      'title': 'annat'
+    },
+  ];
   const [tjänstData, setTjänstData] = useState([]);
-  const [tjänst, setTjänst] = useState('');
+  const [tjänst, setTjänst] = useState([]);
   const [utförandeTid, setUtförandeTid] = useState('');
   const [kostnad, setKostnad] = useState('');
 
-  const [addTimeModal, setAddTimeModal] = useState(true);
+  const [addServiceInput, setAddServiceInput] = useState();
+  const [changeTitleInput, setChangeTitleInput] = useState();
+  const [displayChangeTitle, setDisplayChangeTitle] = useState();
+  const [displayAddServiceInput, setDisplayAddServiceInput] = useState(false);
+  const [selectedRow, setSelectedRow] = useState();
+  const [selectedHuvudTjänst, setSelectedHuvudTjänst] = useState();
+  console.log(tjänstData)
+  console.log(displayChangeTitle)
+
+  const [selectServiceModal, setSelectServiceModal] = useState(true);
+  const [addTimeModal, setAddTimeModal] = useState();
 
   const [activeStep, setActiveStep] = useState(0);
+  const stepperData = ['Konto information', 'Anslut klenik', 'Öppetider', 'Tjänster', 'Slutför'];
 
-  const öppetider = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+  const [currentStartTime, setCurrentStartTime] = useState([]);
+  const [currentEndTime, setCurrentEndTime] = useState([]);
+  const öppetider = { 'mån': ['Måndag', mån, månSlut], 'tis': ['Tisdag', tis, tisSlut], 'ons': ['Onsdag', ons, onsSlut], 'tor': ['Torsdag', tor, torSlut], 'fre': ['Fredag', fre, freSlut], 'lör': ['Lördag', lör, lörSlut], 'sön': ['Söndag', sön, sönSlut] }
+
+
+
+  const tjänster = [
+    { 'Rehab': { 'utförandeTid': '60min', 'kostnad': '450kr' } },
+    { 'Massage': { 'utförandeTid': '40min', 'kostnad': '650kr' } },
+  ];
 
   async function handleSignupAsBusiness() {
     if (password === repeatPassword && password.length >= 6) {
@@ -98,18 +164,38 @@ export default function SignupAsBusiness() {
     };
   };
 
-  function addService() {
-    setTjänstData([
-      ...tjänstData,
-      {
-        'tjänstNamn': tjänst,
-        'utförandeTid': utförandeTid,
-        'kostnad': kostnad,
-      }]);
-    setTjänst('');
-    setUtförandeTid('');
-    setKostnad('');
+  const data = [{
+    'huvudTjänst': [
+      { 'namn': '', 'kostnad': '', 'utförandeTid': '' }
+    ]
+  }]
+
+  function addService(index) {
+    const object = { 'namn': addServiceInput, 'kostnad': '', 'utförandeTid': '' }
+    tjänstData[index].tjänster.push(object)
   };
+  console.log(tjänstData)
+
+  function addSelectedService() {
+    const object = {}
+    setTjänstData([...tjänstData, { 'huvudTjänst': huvudTjänst[selectedHuvudTjänst].title, 'tjänster': [] }]);
+    setTjänst('')
+  };
+
+  function changeServiceTitle(...params) {
+    tjänstData.splice(params[0], 1, params[1])
+    setDisplayChangeTitle()
+  }
+
+  function getHeight(index) {
+    if (selectedRow === index) {
+      const boxHeight = document.getElementsByClassName('serviceInputWrapper')[index].offsetHeight + 25
+      document.getElementsByClassName('dropDownData')[index].style.height = boxHeight + 'px'
+    } else {
+      document.getElementsByClassName('dropDownData')[index].style.height = '0'
+    }
+  };
+  console.log(selectedRow)
 
   function removeService(removeIndex) {
     setTjänstData(tjänstData.filter((_, index) => index !== removeIndex));
@@ -124,30 +210,144 @@ export default function SignupAsBusiness() {
     // if (activeStep <= 1)
     setActiveStep(activeStep + 1)
   }
-  console.log(activeStep)
+
+  function addTime(...params) {
+    console.log(params.length)
+    switch ((params.length === 0 ? currentStartTime[0] : params[0])) {
+      case 0:
+        if (params.length === 0) {
+          setMån(currentStartTime[1])
+        } else {
+          setMån(params[1])
+        }
+        break
+      case 1:
+        if (params.length === 0) {
+          setTis(currentStartTime[1])
+        } else {
+          setTis(params[1])
+        }
+        break
+      case 2:
+        if (params.length === 0) {
+          setOns(currentStartTime[1])
+        } else {
+          setOns(params[1])
+        }
+        break
+      case 3:
+        if (params.length === 0) {
+          setTor(currentStartTime[1])
+        } else {
+          setTor(params[1])
+        }
+        break
+      case 4:
+        if (params.length === 0) {
+          setFre(currentStartTime[1])
+        } else {
+          setFre(params[1])
+        }
+        break
+      case 5:
+        if (params.length === 0) {
+          setLör(currentStartTime[1])
+        } else {
+          setLör(params[1])
+        }
+        break
+      case 6:
+        if (params.length === 0) {
+          setSön(currentStartTime[1])
+        } else {
+          setSön(params[1])
+        }
+        break
+    };
+    switch ((params.length === 0 ? currentEndTime[0] : params[0])) {
+      case 0:
+        if (params.length === 0) {
+          setMånSlut(currentEndTime[1])
+        } else {
+          setMånSlut(params[1])
+        }
+        break
+      case 1:
+        if (params.length === 0) {
+          setTisSlut(currentEndTime[1])
+        } else {
+          setTisSlut(params[1])
+        }
+        break
+      case 2:
+        if (params.length === 0) {
+          setOnsSlut(currentEndTime[1])
+        } else {
+          setOnsSlut(params[1])
+        }
+        break
+      case 3:
+        if (params.length === 0) {
+          setTorSlut(currentEndTime[1])
+        } else {
+          setTorSlut(params[1])
+        }
+        break
+      case 4:
+        if (params.length === 0) {
+          setFreSlut(currentEndTime[1])
+        } else {
+          setFreSlut(params[1])
+        }
+        break
+      case 5:
+        if (params.length === 0) {
+          setLörSlut(currentEndTime[1])
+        } else {
+          setLörSlut(params[1])
+        }
+        break
+      case 6:
+        if (params.length === 0) {
+          setSönSlut(currentEndTime[1])
+        } else {
+          setSönSlut(params[1])
+        }
+        break
+    };
+  };
 
   return (
     <AnslutFöretagPage>
 
+      <StepperT>
+        {stepperData.map((data, index) => {
 
-      <Stepper style={{ 'width': '50%', 'margin': '50px auto 50px auto' }} activeStep={activeStep} alternativeLabel>
-        <Step >
-          <StepLabel>Konto information</StepLabel>
-        </Step>
-        <Step >
-          <StepLabel>Anslut kleniken</StepLabel>
-        </Step>
-        <Step >
-          <StepLabel>Öppetider</StepLabel>
-        </Step>
-        <Step >
-          <StepLabel>Tjänster</StepLabel>
-        </Step>
-        <Step >
-          <StepLabel>Slutför</StepLabel>
-        </Step>
-      </Stepper>
+          return (
+            <>
+              <div className="stepperBox" key={index}>
 
+                {activeStep === index &&
+                  <circle className={`circle ${activeStep === index ? 'active' : ''}`}>{index + 1}</circle>
+                }
+                {activeStep > index &&
+                  <circle className={`circle ${activeStep > index ? 'pastActive' : ''}`}>
+                    <svg className="checkIcon" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="m9.55 17.3-4.975-4.95.725-.725 4.25 4.25 9.15-9.15.725.725Z" /></svg>
+                  </circle>
+                }
+                {activeStep < index &&
+                  <circle className={`circle ${activeStep > index ? 'pastActive' : ''}`}>{index + 1}</circle>
+                }
+                <span className="stepperText">{data}</span>
+                {index !== 0 &&
+                  <span className="line"></span>
+                }
+
+              </div>
+            </>
+          )
+        })}
+      </StepperT>
 
       <Container>
         <UserInfoContainer>
@@ -279,17 +479,12 @@ export default function SignupAsBusiness() {
                 </div>
               </ProfileInput>
               <ProfileInput>
-                <label id='address' className='profileInputLabel'>Telefonnummer</label>
-                <div className='inputBorder'>
-                  <input
-                    className='input'
-                    type="number"
-                    placeholder='Klenikens telefonnummer'
-                    id='address'
-                    onChange={(e) => setKlenikTel(e.target.value)}
-                    value={klenikTel}
-                  />
-                </div>
+                <label id='klenikTel' className='profileInputLabel'>Telefonnummer</label>
+                <PhoneInput
+                  value={value === undefined ? '+46' : value}
+                  defaultCountry="SE"
+                  placeholder="Klenikens telefonnummer"
+                  onChange={setValue} />
               </ProfileInput>
               <TextArea>
                 <label id='aboutUs' className='profileInputLabel'>Om oss</label>
@@ -311,171 +506,198 @@ export default function SignupAsBusiness() {
           {activeStep === 2 &&
             <>
               <CardTitle>Öppetider</CardTitle>
-              {öppetider.map((dag, index) => {
+              {Object.values(öppetider).map((dag, index) => {
+                // console.log(dag)
 
                 return (
-                  <TimeInput key={index}>
-                    <span className="day">{dag}</span>
-                    <button className="closedBtn"><span>Stängt</span></button>
-                  </TimeInput>
+                  <div key={index}>
+                    <TimeInput >
+                      <span className="day">{dag[0]}</span>
+                      {dag[1].length != 0 && dag[2].length != 0 ?
+                        <button className="removeTimeBtn" onClick={() => { addTime(index, '', 'start'); addTime(index, '', 'end') }}>
+                          <span>{dag[1]} - {dag[2]}</span>
+                        </button>
+                        :
+                        <button className="closedBtn" onClick={() => { setAddTimeModal(index) }}>
+                          <span>Stängt</span>
+                        </button>
+                      }
+                    </TimeInput>
+
+                    {addTimeModal === index &&
+                      <AddTimeModal>
+                        <div className="addTimeContainer">
+                          <div className='wrapper'>
+                            <CardTitle>Lägg till öppetid</CardTitle>
+                            <svg onClick={() => setAddTimeModal()} className='exitIcon' xmlns="http://www.w3.org/2000/svg" height="40" width="40"><path d="m10.583 30.417-1-1L19 20l-9.417-9.417 1-1L20 19l9.417-9.417 1 1L21 20l9.417 9.417-1 1L20 21Z" /></svg>
+                          </div>
+
+                          <input
+                            className="timeInput"
+                            type="time"
+                            min="00:00"
+                            max="24:00"
+                            onChange={(e) => setCurrentStartTime([index, e.target.value, 'start'])}
+                          />
+                          -
+                          < input
+                            className="timeInput"
+                            type="time"
+                            min="00:00"
+                            max="24:00"
+                            onChange={(e) => setCurrentEndTime([index, e.target.value, 'end'])}
+                          />
+                          <div className="btnWrapper">
+                            <button className="cancelBtn" onClick={() => setAddTimeModal()}>Avbryt</button>
+                            <button className="saveTimeBtn" onClick={() => { setAddTimeModal(); addTime() }}>Spara</button>
+                          </div>
+                        </div>
+                      </AddTimeModal>
+                    }
+                  </div>
                 )
               })}
-              {addTimeModal === true &&
-                <AddTimeModal>
-                  <div className="addTimeContainer">
-                    <CardTitle>Lägg till öppetid</CardTitle>
-                  </div>
-                </AddTimeModal>
-              }
+
+            </>
+          }
+          {activeStep === 3 && selectServiceModal === true &&
+            <SelectServiceModal>
+              <h1 className="headServiceTitlte">Företagets huvudsakliga verksamhet</h1>
+              <div className="modalContainer">
+                <div className="containerHeader">
+                  <CardTitle>Välj din huvudsakliga verksamhet</CardTitle>
+                </div>
+                <div className="flexBox">
+                  {huvudTjänst.map((data, index) => {
+
+                    return (
+                      <div className={`itemBox ${index === selectedHuvudTjänst ? 'itemBoxSelected' : ''}`} key={index} onClick={() => setSelectedHuvudTjänst(index)}>
+                        <div className="imgContainer">
+                          <Image src={data.img} layout="fill" objectFit="contain" objectPosition="center" />
+                        </div>
+                        <span className="serviceTitle">{data.title}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <FlexBetweenWrapper justifyContent={activeStep > 0 ? 'space-between' : 'flex-end'}>
+                  {activeStep > 0 &&
+                    <button className="backBtn" onClick={backStep}>Tillbaka</button>
+                  }
+                  {activeStep != 4 &&
+                    <button className="nextBtn" onClick={() => { setSelectServiceModal(false); addSelectedService() }}>Spara</button>
+                  }
+                </FlexBetweenWrapper>
+              </div>
+            </SelectServiceModal>
+          }
+          {activeStep === 3 &&
+            <>
+              <CardTitle>Tjänster</CardTitle>
+              {tjänstData.map((tjänst, index) => {
+
+                return (
+                  <ServiceTab key={index} >
+                    <div className="dropDownWrapper">
+
+                      <div className="dropDownHead" >
+                        <div className="wrapper">
+                          {displayChangeTitle === index &&
+                            <>
+                              <input
+                                className="changeTitleInput"
+                                type="text"
+                                placeholder="Ändra rubrik"
+                                onKeyUp={e => e.key == "Enter" ? changeServiceTitle(index, e.target.value) : null}
+                                onChange={e => setChangeTitleInput(e.target.value)}
+                                value={changeTitleInput}
+                              />
+                              <svg onClick={() => changeServiceTitle(index, changeTitleInput)} className="editIcon" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="m9.55 17.65-5.325-5.325 1.05-1.075 4.275 4.275 9.175-9.175 1.05 1.075Z" /></svg>
+                            </>
+                          }
+                          {displayChangeTitle === undefined &&
+                            <>
+                              <span>{tjänst.huvudTjänst}</span>
+                              <svg onClick={() => { setChangeTitleInput(tjänst.huvudTjänst); setDisplayChangeTitle(index); setSelectedRow() }} className="editIcon" xmlns="http://www.w3.org/2000/svg" height="20" width="20"><path d="M4.375 15.75h1.104L13 8.229l-1.083-1.104-7.542 7.542Zm11.437-8.438-3-3.02.771-.771q.479-.459 1.136-.459.656 0 1.114.459l.938.937q.375.396.375.969t-.396.948Zm-.916.917-8.854 8.854h-3v-3l8.854-8.854Zm-2.438-.541-.541-.563L13 8.229Z" /></svg>
+                            </>
+                          }
+                        </div>
+                        <div className="flexGrow" onClick={() => { selectedRow === index ? setSelectedRow() : setSelectedRow(index); getHeight(index) }}>
+                          <svg className={selectedRow === index ? 'openArrowIcon' : 'arrowIcon'} xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M12 14.7 6.7 9.4l.7-.725 4.6 4.6 4.6-4.6.7.725Z" /></svg>
+                        </div>
+                      </div>
+
+                      <div className='dropDownData'>
+                        <div className="serviceInputWrapper">
+                          {displayAddServiceInput === true &&
+                            <ProfileInput>
+                              <div className='inputBorder'>
+                                <input
+                                  className='input'
+                                  type="text"
+                                  placeholder='Namn på tjänsten'
+                                  onChange={(e) => setAddServiceInput(e.target.value)}
+                                  value={addServiceInput}
+                                />
+                                <svg onClick={() => { addService(index); setDisplayAddServiceInput(false) }} className="addIconInput" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M11.5 16.5h1v-4h4v-1h-4v-4h-1v4h-4v1h4ZM12 21q-1.875 0-3.512-.712-1.638-.713-2.85-1.926-1.213-1.212-1.926-2.85Q3 13.875 3 12t.712-3.513q.713-1.637 1.926-2.85 1.212-1.212 2.85-1.925Q10.125 3 12 3t3.513.712q1.637.713 2.85 1.925 1.212 1.213 1.925 2.85Q21 10.125 21 12t-.712 3.512q-.713 1.638-1.925 2.85-1.213 1.213-2.85 1.926Q13.875 21 12 21Zm0-1q3.35 0 5.675-2.325Q20 15.35 20 12q0-3.35-2.325-5.675Q15.35 4 12 4 8.65 4 6.325 6.325 4 8.65 4 12q0 3.35 2.325 5.675Q8.65 20 12 20Zm0-8Z" /></svg>
+                              </div>
+                            </ProfileInput>
+                          }
+
+                          {tjänst.tjänster.map((tjänst, index) => {
+
+                            return (
+                              <div className="serviceWrapper" key={index}>
+                                <span className="serviceTitle">{tjänst.namn}</span>
+                                <div className="flex">
+                                  <div className="boxWrapper">
+                                    <label id="time" className="serviceInputLabel">Varaktighet</label>
+                                    <input
+                                      className="serviceInput"
+                                      type="number"
+                                      id="time"
+                                      placeholder="min"
+                                    />
+                                  </div>
+                                  <div className="boxWrapper">
+                                    <label id="price" className="serviceInputLabel">Pris</label>
+                                    <input
+                                      className="serviceInput"
+                                      type="number"
+                                      id="price"
+                                      placeholder="kr"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })}
+
+
+                          <div className="wrapper">
+                            <svg className="addServiceIcon" xmlns="http://www.w3.org/2000/svg" height="20" width="20"><path d="M9.458 13.792h1.084v-3.25h3.25V9.458h-3.25v-3.25H9.458v3.25h-3.25v1.084h3.25ZM10 17.583q-1.562 0-2.948-.593-1.385-.594-2.417-1.625-1.031-1.032-1.625-2.417-.593-1.386-.593-2.948 0-1.583.593-2.958.594-1.375 1.625-2.407Q5.667 3.604 7.052 3.01 8.438 2.417 10 2.417q1.583 0 2.958.593 1.375.594 2.407 1.625 1.031 1.032 1.625 2.417.593 1.386.593 2.948t-.593 2.948q-.594 1.385-1.625 2.417-1.032 1.031-2.417 1.625-1.386.593-2.948.593Zm0-1.083q2.708 0 4.604-1.896T16.5 10q0-2.708-1.896-4.604T10 3.5q-2.708 0-4.604 1.896T3.5 10q0 2.708 1.896 4.604T10 16.5Zm0-6.5Z" /></svg>
+                            <span className="addService" onClick={() => { setDisplayAddServiceInput(true) }}>Lägg till tjänst</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ServiceTab>
+                )
+              })}
             </>
           }
           <FlexBetweenWrapper justifyContent={activeStep > 0 ? 'space-between' : 'flex-end'}>
             {activeStep > 0 &&
               <button className="backBtn" onClick={backStep}>Tillbaka</button>
             }
-            <button className="nextBtn" onClick={nextStep}>Nästa</button>
+            {activeStep != 4 &&
+              <button className="nextBtn" onClick={nextStep}>Nästa</button>
+            }
           </FlexBetweenWrapper>
         </UserInfoContainer>
       </Container>
 
-
-      {activeStep === 2 &&
-        <>
-          <b> Öppetider:</b>
-          <br />
-          mån:
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setMån(e.target.value)}
-          />
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setMånSlut(e.target.value)}
-          />
-          <br />
-          tis:
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setTis(e.target.value)}
-          />
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setTisSlut(e.target.value)}
-          />
-          <br />
-          ons:
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setOns(e.target.value)}
-          />
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setOnsSlut(e.target.value)}
-          />
-          <br />
-          tor:
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setTor(e.target.value)}
-          />
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setTorSlut(e.target.value)}
-          />
-          <br />
-          fre:
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setFre(e.target.value)}
-          />
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setFreSlut(e.target.value)}
-          />
-          <br />
-          lör:
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setLör(e.target.value)}
-          />
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setLörSlut(e.target.value)}
-          />
-          <br />
-          sön:
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setSön(e.target.value)}
-          />
-          <input
-            type="time"
-            min="00:00"
-            max="24:00"
-            onChange={(e) => setSönSlut(e.target.value)}
-          />
-        </>
-      }
-      {activeStep === 3 &&
-        <>
-          <b>Tjänster:</b>
-          <br />
-          - Namn tjänst
-          <input
-            type="text"
-            placeholder="namn tjänst"
-            onChange={(e) => setTjänst(e.target.value)}
-            value={tjänst}
-          />
-          <br />
-          - Utförande tid:
-          <input
-            type="number"
-            placeholder="min"
-            onChange={(e) => setUtförandeTid(e.target.value)}
-            value={utförandeTid}
-          />
-          <br />
-          - Kostnad:
-          <input
-            type="number"
-            placeholder="kr"
-            onChange={(e) => setKostnad(e.target.value)}
-            value={kostnad}
-          />
-          <br />
-          <button onClick={addService}>Lägg till</button>
-          <br />
-        </>
-      }
-
-      {tjänstData.map((item, index) => {
+      {/* {tjänstData.map((item, index) => {
 
         return (
           <>
@@ -494,7 +716,7 @@ export default function SignupAsBusiness() {
             </div>
           </>
         )
-      })}
+      })} */}
       <br />
       <br />
       <button onClick={handleSignupAsBusiness}>Registrera</button>
