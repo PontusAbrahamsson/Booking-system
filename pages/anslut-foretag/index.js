@@ -145,7 +145,7 @@ export default function SignupAsBusiness() {
     },
     'öppetider': {
       'mån': [mån, månSlut],
-      'tis': [tis.tisSlut],
+      'tis': [tis, tisSlut],
       'ons': [ons, onsSlut],
       'tor': [tor, torSlut],
       'fre': [fre, freSlut],
