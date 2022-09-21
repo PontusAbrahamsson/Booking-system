@@ -48,6 +48,23 @@ export const UserInfoContainer = styled.div`
       border-color: ${({ theme }) => theme.colors.link};
     }
   }
+
+  .flexWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    .addBtn {
+      background-color: ${({ theme }) => theme.colors.link};
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+  }
 `
 
 export const CardTitle = styled.h1`
@@ -683,6 +700,29 @@ export const ServiceTab = styled.div`
           }
         } 
       }
+    }
+  }
+`
+
+export const CompleteRegistration = styled.div`
+
+
+  .sectionTitle {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .infoTable {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+
+    .item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
     }
   }
 `

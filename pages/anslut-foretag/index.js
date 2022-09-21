@@ -10,7 +10,8 @@ import {
   AddTimeModal,
   StepperT,
   ServiceTab,
-  SelectServiceModal
+  SelectServiceModal,
+  CompleteRegistration
 } from "../../styles/anslutFöretagStyle";
 import { useState, useEffect } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -124,6 +125,44 @@ export default function SignupAsBusiness() {
   const [currentEndTime, setCurrentEndTime] = useState([]);
   const öppetider = { 'mån': ['Måndag', mån, månSlut], 'tis': ['Tisdag', tis, tisSlut], 'ons': ['Onsdag', ons, onsSlut], 'tor': ['Torsdag', tor, torSlut], 'fre': ['Fredag', fre, freSlut], 'lör': ['Lördag', lör, lörSlut], 'sön': ['Söndag', sön, sönSlut] }
 
+  for (const value of tjänstData) {
+    console.log(value.huvudTjänst)
+  }
+
+  const allData = {
+    'personlig': {
+      'förnamn': förnamn,
+      'efternamn': efternamn,
+      'e-post': email,
+      'telefonnummber': telefonnummer
+    },
+    'företag': {
+      'företag': företag,
+      'hemsida': hemsida,
+      'address': address,
+      'telefonnummber': value,
+      'om oss': omOss
+    },
+    'öppetider': {
+      'mån': [mån, månSlut],
+      'tis': [tis.tisSlut],
+      'ons': [ons, onsSlut],
+      'tor': [tor, torSlut],
+      'fre': [fre, freSlut],
+      'lör': [lör, lörSlut],
+      'sön': [sön, sönSlut]
+    },
+    'tjänster': [
+      {
+        'tjänst rubrik': '_rubrik_',
+        'tjänster': [
+
+        ]
+      }
+    ]
+  }
+
+
   async function handleSignupAsBusiness() {
     if (password === repeatPassword && password.length >= 6) {
       await createUserWithEmailAndPassword(auth, email, password)
@@ -205,7 +244,17 @@ export default function SignupAsBusiness() {
     }
   };
 
-  function changeHeight(index) {
+  function addHeight(index) {
+    console.log(index)
+    let element = document.getElementsByClassName('flexGrow')[index];
+
+    if (element.classList.value.includes('toogleDropDown')) {
+      const boxHeight = document.getElementsByClassName('serviceInputWrapper')[index].offsetHeight
+      document.getElementsByClassName('dropDownData')[index].style.height = boxHeight + 133 + 'px'
+    }
+  };
+
+  function removeHeight(index) {
     console.log(index)
     let element = document.getElementsByClassName('flexGrow')[index];
 
@@ -235,7 +284,7 @@ export default function SignupAsBusiness() {
     const filter = tjänstData[huvudIndex].tjänster.filter((_, index) => index !== tjänstIndex)
     tjänstData[huvudIndex].tjänster = filter
     setTjänstData(tjänstData => ([...tjänstData]))
-    changeHeight(huvudIndex)
+    removeHeight(huvudIndex)
   };
 
   function backStep() {
@@ -631,7 +680,10 @@ export default function SignupAsBusiness() {
           }
           {activeStep === 3 &&
             <>
-              <CardTitle>Tjänster</CardTitle>
+              <div className="flexWrapper">
+                <CardTitle>Tjänster</CardTitle>
+                <button onClick={() => setSelectServiceModal(true)} className="addBtn">Lägg till</button>
+              </div>
               {tjänstData.map((tjänst, index) => {
 
                 return (
@@ -667,20 +719,7 @@ export default function SignupAsBusiness() {
 
                       <div className='dropDownData'>
                         <div className="serviceInputWrapper">
-                          {displayAddServiceInput === index &&
-                            <ProfileInput>
-                              <div className='inputBorder'>
-                                <input
-                                  className='input'
-                                  type="text"
-                                  placeholder='Namn på tjänsten'
-                                  onChange={(e) => setAddServiceInput(e.target.value)}
-                                  value={addServiceInput}
-                                />
-                                <svg onClick={() => { addService(index); setDisplayAddServiceInput() }} className="addIconInput" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M11.5 16.5h1v-4h4v-1h-4v-4h-1v4h-4v1h4ZM12 21q-1.875 0-3.512-.712-1.638-.713-2.85-1.926-1.213-1.212-1.926-2.85Q3 13.875 3 12t.712-3.513q.713-1.637 1.926-2.85 1.212-1.212 2.85-1.925Q10.125 3 12 3t3.513.712q1.637.713 2.85 1.925 1.212 1.213 1.925 2.85Q21 10.125 21 12t-.712 3.512q-.713 1.638-1.925 2.85-1.213 1.213-2.85 1.926Q13.875 21 12 21Zm0-1q3.35 0 5.675-2.325Q20 15.35 20 12q0-3.35-2.325-5.675Q15.35 4 12 4 8.65 4 6.325 6.325 4 8.65 4 12q0 3.35 2.325 5.675Q8.65 20 12 20Zm0-8Z" /></svg>
-                              </div>
-                            </ProfileInput>
-                          }
+
 
                           {tjänst.tjänster.map((tjänst, tjänstIndex) => {
 
@@ -737,7 +776,20 @@ export default function SignupAsBusiness() {
                             )
                           })}
 
-
+                          {displayAddServiceInput === index &&
+                            <ProfileInput>
+                              <div className='inputBorder'>
+                                <input
+                                  className='input'
+                                  type="text"
+                                  placeholder='Namn på tjänsten'
+                                  onChange={(e) => setAddServiceInput(e.target.value)}
+                                  value={addServiceInput}
+                                />
+                                <svg onClick={() => { addService(index); setDisplayAddServiceInput(); addHeight(index) }} className="addIconInput" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M11.5 16.5h1v-4h4v-1h-4v-4h-1v4h-4v1h4ZM12 21q-1.875 0-3.512-.712-1.638-.713-2.85-1.926-1.213-1.212-1.926-2.85Q3 13.875 3 12t.712-3.513q.713-1.637 1.926-2.85 1.212-1.212 2.85-1.925Q10.125 3 12 3t3.513.712q1.637.713 2.85 1.925 1.212 1.213 1.925 2.85Q21 10.125 21 12t-.712 3.512q-.713 1.638-1.925 2.85-1.213 1.213-2.85 1.926Q13.875 21 12 21Zm0-1q3.35 0 5.675-2.325Q20 15.35 20 12q0-3.35-2.325-5.675Q15.35 4 12 4 8.65 4 6.325 6.325 4 8.65 4 12q0 3.35 2.325 5.675Q8.65 20 12 20Zm0-8Z" /></svg>
+                              </div>
+                            </ProfileInput>
+                          }
                           <div className="wrapper">
                             <svg className="addServiceIcon" xmlns="http://www.w3.org/2000/svg" height="20" width="20"><path d="M9.458 13.792h1.084v-3.25h3.25V9.458h-3.25v-3.25H9.458v3.25h-3.25v1.084h3.25ZM10 17.583q-1.562 0-2.948-.593-1.385-.594-2.417-1.625-1.031-1.032-1.625-2.417-.593-1.386-.593-2.948 0-1.583.593-2.958.594-1.375 1.625-2.407Q5.667 3.604 7.052 3.01 8.438 2.417 10 2.417q1.583 0 2.958.593 1.375.594 2.407 1.625 1.031 1.032 1.625 2.417.593 1.386.593 2.948t-.593 2.948q-.594 1.385-1.625 2.417-1.032 1.031-2.417 1.625-1.386.593-2.948.593Zm0-1.083q2.708 0 4.604-1.896T16.5 10q0-2.708-1.896-4.604T10 3.5q-2.708 0-4.604 1.896T3.5 10q0 2.708 1.896 4.604T10 16.5Zm0-6.5Z" /></svg>
                             <span className="addService" onClick={() => { setDisplayAddServiceInput(index) }}>Lägg till tjänst</span>
@@ -750,6 +802,19 @@ export default function SignupAsBusiness() {
               })}
             </>
           }
+          {activeStep === 4 &&
+            <CompleteRegistration>
+              <CardTitle>Slutför</CardTitle>
+              <span className="sectionTitle">Personlig information</span>
+              <ul className="infoTable">
+                <li className="item">
+                  <span className="itemTitle">Telefonnummber</span>
+                  <span className="itemInfo"></span>
+                </li>
+
+              </ul>
+            </CompleteRegistration>
+          }
           <FlexBetweenWrapper justifyContent={activeStep > 0 ? 'space-between' : 'flex-end'}>
             {activeStep > 0 &&
               <button className="backBtn" onClick={backStep}>Tillbaka</button>
@@ -760,27 +825,6 @@ export default function SignupAsBusiness() {
           </FlexBetweenWrapper>
         </UserInfoContainer>
       </Container>
-
-      {/* {tjänstData.map((item, index) => {
-
-        return (
-          <>
-            <div key={index}>
-              {item.tjänstNamn}
-              <br />
-              {item.kostnad}
-              <br />
-              {item.utförandeTid}
-              <br />
-              {item.frTid}
-              <br />
-              {item.frDatum}
-              <br />
-              <button onClick={() => removeService(index)}>Ta bort</button>
-            </div>
-          </>
-        )
-      })} */}
       <br />
       <br />
       <button onClick={handleSignupAsBusiness}>Registrera</button>
