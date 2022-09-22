@@ -4,15 +4,19 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import WithAuth from "../../hoc/withAuth";
 import WithBusinessAuth from "../../hoc/withBusinessAuth";
+import Image from "next/image";
+import logo from '../../resources/images/Logo-white-text.png'
 
 export default function Navbar() {
   const { defaultUser, businessAccount } = useSelector((state) => state.users);
-  console.log(businessAccount)
-  console.log(defaultUser)
+  // console.log(businessAccount)
+  // console.log(defaultUser)
 
   return (
     <StyledNavbar>
-      <h1>FÖRETAG</h1>
+      <div className="logoContainer">
+        <Image className="logo" src={logo}></Image>
+      </div>
       <AuthBtnCol>
         {businessAccount !== null &&
           <WithBusinessAuth>

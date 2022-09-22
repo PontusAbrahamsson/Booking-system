@@ -8,7 +8,8 @@ const GlobalStyles = createGlobalStyle`
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: ${({ theme }) => theme.colors.background};
+  /* background-color: ${({ theme }) => theme.colors.background}; */
+  background-color: white;
 }
 
 h1,

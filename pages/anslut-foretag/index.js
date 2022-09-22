@@ -30,6 +30,7 @@ export default function SignupAsBusiness() {
   const dispatch = useDispatch();
   const currentUser = auth.currentUser;
   const router = useRouter();
+  console.log(currentUser)
 
   const [förnamn, setFörnamn] = useState('');
   const [efternamn, setEfternamn] = useState('');
@@ -39,6 +40,7 @@ export default function SignupAsBusiness() {
   const [telefonnummer, setTelefonnummer] = useState('');
 
   const [företag, setFöretag] = useState('');
+  const [företagEpost, setFöretagEpost] = useState('');
   const [hemsida, setHemsida] = useState('');
   const [address, setAddress] = useState('');
   const [value, setValue] = useState();
@@ -102,9 +104,6 @@ export default function SignupAsBusiness() {
     },
   ];
   const [tjänstData, setTjänstData] = useState([]);
-  const [tjänst, setTjänst] = useState([]);
-  const [varaktighet, setVaraktighet] = useState('');
-  const [kostnad, setKostnad] = useState('');
 
   const [addServiceInput, setAddServiceInput] = useState();
   const [changeTitleInput, setChangeTitleInput] = useState();
@@ -124,42 +123,30 @@ export default function SignupAsBusiness() {
   const [currentStartTime, setCurrentStartTime] = useState([]);
   const [currentEndTime, setCurrentEndTime] = useState([]);
   const öppetider = { 'mån': ['Måndag', mån, månSlut], 'tis': ['Tisdag', tis, tisSlut], 'ons': ['Onsdag', ons, onsSlut], 'tor': ['Torsdag', tor, torSlut], 'fre': ['Fredag', fre, freSlut], 'lör': ['Lördag', lör, lörSlut], 'sön': ['Söndag', sön, sönSlut] }
+  const slug = företag.toLowerCase().replace(/ /g, '-');
+  const id = Math.floor(Math.random() * 50000)
 
-  for (const value of tjänstData) {
-    console.log(value.huvudTjänst)
-  }
-
-  const allData = {
-    'personlig': {
-      'förnamn': förnamn,
-      'efternamn': efternamn,
-      'e-post': email,
-      'telefonnummber': telefonnummer
-    },
+  const företagsData = {
     'företag': {
       'företag': företag,
+      'email': företagEpost,
       'hemsida': hemsida,
       'address': address,
-      'telefonnummber': value,
-      'om oss': omOss
+      'telefonnummer': value,
+      'omOss': omOss,
+      'slug': slug,
+      'id': id
     },
     'öppetider': {
-      'mån': [mån, månSlut],
-      'tis': [tis.tisSlut],
-      'ons': [ons, onsSlut],
-      'tor': [tor, torSlut],
-      'fre': [fre, freSlut],
-      'lör': [lör, lörSlut],
-      'sön': [sön, sönSlut]
+      'mån': { 'dag': 'Måndag', 'start': mån, 'end': månSlut, 'dayOff': mån.length == 0 && månSlut.length == 0 ? true : false, 'index': 1 },
+      'tis': { 'dag': 'Tisdag', 'start': tis, 'end': tisSlut, 'dayOff': tis.length == 0 && tisSlut.length == 0 ? true : false, 'index': 2 },
+      'ons': { 'dag': 'Onsdag', 'start': ons, 'end': onsSlut, 'dayOff': ons.length == 0 && onsSlut.length == 0 ? true : false, 'index': 3 },
+      'tor': { 'dag': 'Torsdag', 'start': tor, 'end': torSlut, 'dayOff': tor.length == 0 && torSlut.length == 0 ? true : false, 'index': 4 },
+      'fre': { 'dag': 'Fredag', 'start': fre, 'end': freSlut, 'dayOff': fre.length == 0 && freSlut.length == 0 ? true : false, 'index': 5 },
+      'lör': { 'dag': 'Lördag', 'start': lör, 'end': lörSlut, 'dayOff': lör.length == 0 && lörSlut.length == 0 ? true : false, 'index': 6 },
+      'sön': { 'dag': 'Söndag', 'start': sön, 'end': sönSlut, 'dayOff': sön.length == 0 && sönSlut.length == 0 ? true : false, 'index': 7 }
     },
-    'tjänster': [
-      {
-        'tjänst rubrik': '_rubrik_',
-        'tjänster': [
-
-        ]
-      }
-    ]
+    'tjänster': tjänstData
   }
 
 
@@ -168,24 +155,21 @@ export default function SignupAsBusiness() {
       await createUserWithEmailAndPassword(auth, email, password)
         .then(({ user }) => {
           dispatch(businessUserLogin({ 'uid': user.uid }))
-          setDoc(doc(db, "users", user.uid), {
-            'förnamn': förnamn,
-            'efternamn': efternamn,
-            'email': email,
-            'telefonnummer': telefonnummer,
-            'address': address,
-            'businessUser': true
+          addDoc(collection(db, "service"), företagsData).then((docRef) => {
+            const tjänstID = docRef.id.toString()
+            setDoc(doc(db, "users", user.uid), {
+              'förnamn': förnamn,
+              'efternamn': efternamn,
+              'email': email,
+              'telefonnummer': telefonnummer,
+              'address': address,
+              'businessUser': true,
+              'tjänster': [
+                tjänstID
+              ]
+            });
           });
-          addDoc(collection(db, "service"), {
-            'uid': user.uid,
-            'email': email,
-            'företag': företag,
-            'telefonnummer': telefonnummer,
-            'hemsida': hemsida,
-            'omOss': omOss,
-            'öppetider': { 'mån': [mån, månSlut], 'tis': [tis, tisSlut], 'ons': [ons, onsSlut], 'tor': [tor, torSlut], 'fre': [fre, freSlut], 'lör': [lör, lörSlut], 'sön': [sön, sönSlut] },
-            'tjänst': tjänstData
-          })
+
           const addBusinessAccountFunction = httpsCallable(functions, 'addBusinessAccount');
           addBusinessAccountFunction({ email: email })
             .then((result) => {
@@ -227,10 +211,7 @@ export default function SignupAsBusiness() {
     setDisplayServiceTitle()
   }
 
-  console.log(tjänstData)
-
   function getHeight(index) {
-    console.log(index)
     let element = document.getElementsByClassName('flexGrow')[index];
     element.classList.toggle('toogleDropDown');
 
@@ -245,7 +226,6 @@ export default function SignupAsBusiness() {
   };
 
   function addHeight(index) {
-    console.log(index)
     let element = document.getElementsByClassName('flexGrow')[index];
 
     if (element.classList.value.includes('toogleDropDown')) {
@@ -255,7 +235,6 @@ export default function SignupAsBusiness() {
   };
 
   function removeHeight(index) {
-    console.log(index)
     let element = document.getElementsByClassName('flexGrow')[index];
 
     if (element.classList.value.includes('toogleDropDown')) {
@@ -298,7 +277,6 @@ export default function SignupAsBusiness() {
   };
 
   function addTime(...params) {
-    console.log(params.length)
     switch ((params.length === 0 ? currentStartTime[0] : params[0])) {
       case 0:
         if (params.length === 0) {
@@ -535,6 +513,19 @@ export default function SignupAsBusiness() {
                     id='business'
                     onChange={(e) => setFöretag(e.target.value)}
                     value={företag}
+                  />
+                </div>
+              </ProfileInput>
+              <ProfileInput>
+                <label id='businessEmail' className='profileInputLabel'>E-post</label>
+                <div className='inputBorder'>
+                  <input
+                    className='input'
+                    type="email"
+                    placeholder='Företagets e-post'
+                    id='businessEmail'
+                    onChange={(e) => setFöretagEpost(e.target.value)}
+                    value={företagEpost}
                   />
                 </div>
               </ProfileInput>
@@ -805,14 +796,101 @@ export default function SignupAsBusiness() {
           {activeStep === 4 &&
             <CompleteRegistration>
               <CardTitle>Slutför</CardTitle>
-              <span className="sectionTitle">Personlig information</span>
+              <div className="sectionTitle">Personlig information</div>
               <ul className="infoTable">
                 <li className="item">
-                  <span className="itemTitle">Telefonnummber</span>
-                  <span className="itemInfo"></span>
+                  <span className="itemTitle">Förnamn</span>
+                  <span className="itemInfo">{förnamn}</span>
                 </li>
-
+                <li className="item">
+                  <span className="itemTitle">Efternamn</span>
+                  <span className="itemInfo">{efternamn}</span>
+                </li>
+                <li className="item">
+                  <span className="itemTitle">E-post</span>
+                  <span className="itemInfo">{email}</span>
+                </li>
+                <li className="item">
+                  <span className="itemTitle">Telefonnummer</span>
+                  <span className="itemInfo">{telefonnummer}</span>
+                </li>
               </ul>
+              <div className="sectionTitle">Företag information</div>
+              <ul className="infoTable">
+                <li className="item">
+                  <span className="itemTitle">Företag</span>
+                  <span className="itemInfo">{företag}</span>
+                </li>
+                <li className="item">
+                  <span className="itemTitle">Företag e-post</span>
+                  <span className="itemInfo">{företagEpost}</span>
+                </li>
+                <li className="item">
+                  <span className="itemTitle">Hemsida</span>
+                  <span className="itemInfo">{hemsida}</span>
+                </li>
+                <li className="item">
+                  <span className="itemTitle">Address</span>
+                  <span className="itemInfo">{address}</span>
+                </li>
+                <li className="item">
+                  <span className="itemTitle">Telefonnummer</span>
+                  <span className="itemInfo">{value}</span>
+                </li>
+                <li className="item">
+                  <span className="itemTitle">Om oss</span>
+                  <span className="itemInfo">{omOss.slice(0, 25)}<span>...</span></span>
+                </li>
+              </ul>
+              <div className="sectionTitle">Öppetider</div>
+              <ul className="infoTable">
+                {Object.values(öppetider).map((data, index) => {
+                  console.log(data[1].length)
+
+                  return (
+                    <>
+                      <li className="item">
+                        <span className="itemTitle">Måndag</span>
+                        {data[1].length != 0 && data[2].length != 0 ?
+                          <span key={index} className="itemInfo">{data[1]} - {data[2]}</span>
+                          :
+                          <span key={index} className="itemInfo">Stängt</span>
+                        }
+                      </li>
+                    </>
+                  )
+                })}
+              </ul>
+              <div className="sectionTitle">Tjänster</div>
+              {tjänstData.map((data, index) => {
+
+                console.log(data)
+                return (
+                  <div className="container" key={index}>
+                    <span className="headTitle">{data.huvudTjänst}</span>
+                    <ul>
+                      {data.tjänster.map((tjänstItem, itemIndex) => {
+
+                        return (
+                          <li key={itemIndex}>
+                            <span className="serviceTitle">{tjänstItem.namn}</span>
+                            <div className="flex">
+                              <span>Kostnad</span>
+                              <span>{tjänstItem.kostnad}kr</span>
+                            </div>
+                            <div className="flex">
+                              <span>Utförande tid</span>
+                              <span>{tjänstItem.utförandeTid}min</span>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                )
+              })}
+
+
             </CompleteRegistration>
           }
           <FlexBetweenWrapper justifyContent={activeStep > 0 ? 'space-between' : 'flex-end'}>
@@ -822,12 +900,12 @@ export default function SignupAsBusiness() {
             {activeStep != 4 &&
               <button className="nextBtn" onClick={nextStep}>Nästa</button>
             }
+            {activeStep === 4 &&
+              <button className="nextBtn" onClick={handleSignupAsBusiness}>Registrera</button>
+            }
           </FlexBetweenWrapper>
         </UserInfoContainer>
       </Container>
-      <br />
-      <br />
-      <button onClick={handleSignupAsBusiness}>Registrera</button>
     </AnslutFöretagPage>
   )
 }

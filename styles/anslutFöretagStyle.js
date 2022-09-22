@@ -708,21 +708,86 @@ export const CompleteRegistration = styled.div`
 
 
   .sectionTitle {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 500;
+    margin-top: 40px;
   }
 
   .infoTable {
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin: 0;
+    margin-top: 15px;
     padding: 0;
+    height: auto;
+   
 
     .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin: 8px 0;
+      
+
+      .itemTitle {
+        font-weight: 500;
+        font-size: 16px;
+        text-transform: capitalize;
+        list-style: none;
+        overflow: hidden;
+      }
+
+      .itemInfo {
+        font-weight: 400;
+        font-size: 16px;
+        list-style: none;
+      }
+    }
+  }
+
+  .container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 10px;
+
+    .headTitle {
+      font-size: 18px;
+      font-weight: 500;
+      margin-top: 15px;
+      text-transform: capitalize;
+    }
+
+    ul {
       width: 100%;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      padding: 0;
+      margin-top: 0;
+      
+  
+      li {
+        list-style: none;
+        margin: 10px 0;
+
+        .serviceTitle {
+          font-weight: 500;
+          font-size: 16px;
+          text-transform: capitalize;
+          list-style: none;
+          overflow: hidden;
+          margin-top: 15px;
+          margin-bottom: 5px;
+        }
+      
+        .flex {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+        }
+      }
     }
   }
 `

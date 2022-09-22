@@ -10,10 +10,15 @@ export const StyledNavbar = styled.header`
   /* position: fixed; */
   box-sizing: border-box;
 
-  h1 {
-    margin: 0;
-    color: white;
-    font-size: 24px;
+  .logoContainer {
+    width: 120px;
+    position: relative;
+
+    .logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 `
 
