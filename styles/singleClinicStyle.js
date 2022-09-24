@@ -23,7 +23,7 @@ export const BookingSection = styled.div`
     margin-bottom: 20px;
   }
 
-  .serviceUl {
+  .headSserviceUl {
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -52,59 +52,70 @@ export const BookingSection = styled.div`
         }
       }
 
-      .singleServiceLi {
-        list-style: none;
-        box-sizing: border-box;
-        padding: 15px;
+      .serviceUl {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 0;
+        margin: 0;
+        height: 1px;
+        overflow: hidden;
+        transition: ease-in-out .2s;
 
-        .ServiceFlexBetween {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+        .singleServiceLi {
+          list-style: none;
+          box-sizing: border-box;
+          padding: 15px;
 
-          .wrapper {
+          .ServiceFlexBetween {
+            width: 100%;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
 
-            .singleTitle {
+            .wrapper {
+              display: flex;
+              flex-direction: column;
+
+              .singleTitle {
+                font-size: 16px;
+                font-weight: 500;
+              }
+
+              .signleUnderText {
+                font-size: 14px;
+                color: grey;
+                font-weight: 500;
+              }
+            }
+
+            .bookBtn {
+              background-color: white;
+              border: 1px solid ${({ theme }) => theme.colors.link};
+              border-radius: 20px;
+              padding: 8px 20px;
               font-size: 16px;
               font-weight: 500;
-            }
+              transition: ease-in-out .2s;
+              cursor: pointer;
 
-            .signleUnderText {
-              font-size: 14px;
-              color: grey;
-              font-weight: 500;
+              &:hover {
+                background-color: ${({ theme }) => theme.colors.link};
+                color: white;
+              }
             }
           }
 
-          .bookBtn {
-            background-color: white;
-            border: 1px solid ${({ theme }) => theme.colors.link};
-            border-radius: 20px;
-            padding: 8px 20px;
+          .singleTitle {
             font-size: 16px;
             font-weight: 500;
-            transition: ease-in-out .2s;
-            cursor: pointer;
-
-            &:hover {
-              background-color: ${({ theme }) => theme.colors.link};
-              color: white;
-            }
           }
-        }
 
-        .singleTitle {
-          font-size: 16px;
-          font-weight: 500;
-        }
-
-        .signleUnderText {
-          font-size: 14px;
-          color: grey;
-          font-weight: 500;
+          .signleUnderText {
+            font-size: 14px;
+            color: grey;
+            font-weight: 500;
+          }
         }
       }
     }

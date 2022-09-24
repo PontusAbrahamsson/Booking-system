@@ -32,7 +32,21 @@ const SignleClinicPage = () => {
       }
     };
     getSingleClinic();
-  }, [singleClinicId])
+  }, [singleClinicId]);
+
+  const openServiceDropDown = (index) => {
+    let element = document.getElementsByClassName('headServiceLi')[index];
+    element.classList.toggle('toogleDropDown');
+
+    if (element.classList.contains("toogleDropDown")) {
+      const boxHeight = document.getElementsByClassName('serviceUl')[index].offsetHeight + 25
+      document.getElementsByClassName('serviceUl')[index].style.height = boxHeight + 'px'
+      document.getElementsByClassName('arrowIcon')[index].style.transform = 'rotate(-180deg)'
+    } else {
+      document.getElementsByClassName('serviceUl')[index].style.height = '0'
+      document.getElementsByClassName('arrowIcon')[index].style.transform = 'rotate(0deg)'
+    }
+  };
 
   if (isLoading === true) {
     return (
@@ -46,11 +60,11 @@ const SignleClinicPage = () => {
     <SingleClinic>
       <BookingSection>
         <span className="title">Boka tjänst</span>
-        <ul className="serviceUl">
+        <ul className="headSserviceUl">
           {signleClinic.tjänster.map((huvudTjänst, index) => {
 
             return (
-              <li className="headServiceLi">
+              <li className="headServiceLi" onClick={() => openServiceDropDown(index)}>
                 <div className="flexBetween">
                   <span className="headServiceTitle" key={index}>{huvudTjänst.huvudTjänst}</span>
                   <svg className='arrowIcon' xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M12 14.7 6.7 9.4l.7-.725 4.6 4.6 4.6-4.6.7.725Z" /></svg>
@@ -70,8 +84,6 @@ const SignleClinicPage = () => {
                       </li>
                     )
                   })}
-
-
                 </ul>
               </li>
             )
