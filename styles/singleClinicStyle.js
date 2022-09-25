@@ -17,10 +17,28 @@ export const BookingSection = styled.div`
   display: flex;
   flex-direction: column;
 
+  .imageSection {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .imageWrapper {
+      width: 100%;
+      height: 400px;
+
+      .mainImg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 2px;
+      }
+    }
+  }
+
   .title {
     font-size: 26px;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin: 20px 0;
   }
 
   .headSserviceUl {
@@ -93,6 +111,7 @@ export const BookingSection = styled.div`
               background-color: white;
               border: 1px solid ${({ theme }) => theme.colors.link};
               border-radius: 20px;
+              color: ${({ theme }) => theme.colors.link};
               padding: 8px 20px;
               font-size: 16px;
               font-weight: 500;

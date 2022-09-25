@@ -9,6 +9,7 @@ import {
 
 } from "../../styles/singleClinicStyle";
 import Link from "next/link";
+import Image from "next/image";
 
 const SignleClinicPage = () => {
   const router = useRouter();
@@ -39,7 +40,7 @@ const SignleClinicPage = () => {
     element.classList.toggle('toogleDropDown');
 
     if (element.classList.contains("toogleDropDown")) {
-      const boxHeight = document.getElementsByClassName('serviceUl')[index].offsetHeight + 25
+      const boxHeight = document.getElementsByClassName('dropDownWrapper')[index].offsetHeight
       document.getElementsByClassName('serviceUl')[index].style.height = boxHeight + 'px'
       document.getElementsByClassName('arrowIcon')[index].style.transform = 'rotate(-180deg)'
     } else {
@@ -47,6 +48,24 @@ const SignleClinicPage = () => {
       document.getElementsByClassName('arrowIcon')[index].style.transform = 'rotate(0deg)'
     }
   };
+
+
+  const currentWeekDay = new Date().getDay()
+  console.log(currentWeekDay)
+
+  const currentDay = new Date().getDate()
+  console.log(currentDay)
+
+  const date = new Date().getMonth()
+  console.log(date)
+
+
+
+
+
+
+
+
 
   if (isLoading === true) {
     return (
@@ -59,6 +78,12 @@ const SignleClinicPage = () => {
   return (
     <SingleClinic>
       <BookingSection>
+        <div className="imageSection">
+          <div className="imageWrapper">
+            <img className="mainImg" src="https://media.istockphoto.com/photos/barber-giving-a-haircut-in-his-shop-picture-id937443868?k=20&m=937443868&s=170667a&w=0&h=NSLPTvOirsVZjf1PTFBLKOj5xzJRzW_XMeADtJdwdlg=" />
+          </div>
+        </div>
+        <span className="title">{signleClinic.företag.företag}</span>
         <span className="title">Boka tjänst</span>
         <ul className="headSserviceUl">
           {signleClinic.tjänster.map((huvudTjänst, index) => {
@@ -69,22 +94,26 @@ const SignleClinicPage = () => {
                   <span className="headServiceTitle" key={index}>{huvudTjänst.huvudTjänst}</span>
                   <svg className='arrowIcon' xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M12 14.7 6.7 9.4l.7-.725 4.6 4.6 4.6-4.6.7.725Z" /></svg>
                 </div>
-                <ul className="serviceUl">
-                  {huvudTjänst.tjänster.map((tjänst, tjänstIndex) => {
 
-                    return (
-                      <li key={tjänstIndex} className="singleServiceLi">
-                        <div className="ServiceFlexBetween">
-                          <div className="wrapper">
-                            <p className="singleTitle">{tjänst.namn} - {tjänst.utförandeTid} min</p>
-                            <p className="signleUnderText">{tjänst.utförandeTid} minuter , {tjänst.kostnad} kr</p>
+                <ul className="serviceUl">
+                  <div className="dropDownWrapper">
+                    {huvudTjänst.tjänster.map((tjänst, tjänstIndex) => {
+
+                      return (
+                        <li key={tjänstIndex} className="singleServiceLi">
+                          <div className="ServiceFlexBetween">
+                            <div className="wrapper">
+                              <p className="singleTitle">{tjänst.namn} - {tjänst.utförandeTid} min</p>
+                              <p className="signleUnderText">{tjänst.utförandeTid} minuter , {tjänst.kostnad} kr</p>
+                            </div>
+                            <button className="bookBtn">Boka</button>
                           </div>
-                          <button className="bookBtn">Boka</button>
-                        </div>
-                      </li>
-                    )
-                  })}
+                        </li>
+                      )
+                    })}
+                  </div>
                 </ul>
+
               </li>
             )
           })}
@@ -110,7 +139,7 @@ const SignleClinicPage = () => {
         <div className="flexBetween">
           <div className="wrap">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M19.425 20.45q-2.9 0-5.762-1.388-2.863-1.387-5.113-3.637-2.25-2.25-3.637-5.1-1.388-2.85-1.388-5.775 0-.45.3-.75t.75-.3h3.25q.4 0 .687.237.288.238.363.613L9.45 7.3q.05.375-.025.675-.075.3-.325.525l-2.3 2.25q1.2 2 2.837 3.625Q11.275 16 13.35 17.2l2.225-2.25q.25-.25.588-.35.337-.1.687-.05l2.775.575q.375.075.613.35.237.275.237.675v3.25q0 .45-.3.75t-.75.3ZM6.1 9.325l1.775-1.7q.05-.05.063-.113.012-.062-.013-.112L7.5 5.15q-.025-.075-.075-.113Q7.375 5 7.3 5H5.175q-.075 0-.113.037-.037.038-.037.088.075 1.025.338 2.087.262 1.063.737 2.113Zm8.65 8.575q1 .475 2.075.725 1.075.25 2.025.275.05 0 .088-.038.037-.037.037-.087v-2.1q0-.075-.037-.125-.038-.05-.113-.075l-2.1-.425q-.05-.025-.1 0l-.1.05ZM6.1 9.325Zm8.65 8.575Z" /></svg>
-            {signleClinic.företag.telefonnummer}
+            <p>{signleClinic.företag.telefonnummer}</p>
           </div>
           <button className="callBtn">Ring</button>
         </div>
